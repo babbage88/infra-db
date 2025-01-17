@@ -27,6 +27,19 @@ var (
 	dbErr  error
 )
 
+func InitializeDbConnectionFromUrl(dbUrl string) (*sql.DB, error) {
+	dbOnce.Do(func() {
+		// Connect to the PostgreSQL database
+		slog.Debug("Connecting to database url:  %s", dbUrl)
+
+		db, dbErr = sql.Open("postgres", dbUrl)
+		if dbErr != nil {
+			slog.Error("Error connecting to the database", slog.String("Error", dbErr.Error()))
+		}
+	})
+	return db, dbErr
+}
+
 func InitializeDbConnection(dbConn *DatabaseConnection) (*sql.DB, error) {
 	dbOnce.Do(func() {
 		// Connect to the PostgreSQL database
