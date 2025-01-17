@@ -1,11 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"embed"
 	"log/slog"
 	"os"
 
-	"github.com/babbage88/infra-db/infra_db"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"
 	"github.com/pressly/goose/v3"
 )
@@ -19,16 +20,14 @@ func main() {
 		slog.Error("Error loading .env", slog.String("error", err.Error()))
 	}
 
-	db, err := infra_db.InitializeDbConnectionFromUrl(os.Getenv("DATABASE_URL"))
-
+	db, err := sql.Open("pgx", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		slog.Error("Error Initializing db", slog.String("error", err.Error()))
 	}
-
 	slog.Info("Starting migratioms")
 	goose.SetBaseFS(embedMigrations)
 
-	if err := goose.SetDialect("postgres"); err != nil {
+	if err := goose.SetDialect("pgx"); err != nil {
 		panic(err)
 	}
 
