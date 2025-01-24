@@ -28,10 +28,10 @@ func main() {
 	goose.SetBaseFS(embedMigrations)
 
 	if err := goose.SetDialect("pgx"); err != nil {
-		panic(err)
+		slog.Error("Error configuring driver for migration", slog.String("error", err.Error()))
 	}
 
 	if err := goose.Up(db, "migrations"); err != nil {
-		panic(err)
+		slog.Error("Error configuring driver for migration", slog.String("error", err.Error()))
 	}
 }

@@ -153,12 +153,12 @@ ALTER TABLE ONLY public.host_servers ALTER COLUMN id SET DEFAULT nextval('public
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 ALTER TABLE ONLY public.user_hosted_db ALTER COLUMN id SET DEFAULT nextval('public.user_hosted_db_id_seq'::regclass);
 ALTER TABLE ONLY public.user_hosted_k8 ALTER COLUMN id SET DEFAULT nextval('public.user_hosted_k8_id_seq'::regclass);
-ALTER TABLE public.user_hosted_db OWNER TO postgres;
-ALTER TABLE public.auth_tokens OWNER TO postgres;
-ALTER TABLE public.dns_records OWNER TO postgres;
-ALTER TABLE public.user_hosted_k8 OWNER TO postgres;
-ALTER TABLE public.host_servers OWNER TO postgres;
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE public.user_hosted_db OWNER TO CURRENT_USER;
+ALTER TABLE public.auth_tokens OWNER TO CURRENT_USER;
+ALTER TABLE public.dns_records OWNER TO CURRENT_USER;
+ALTER TABLE public.user_hosted_k8 OWNER TO CURRENT_USER;
+ALTER TABLE public.host_servers OWNER TO CURRENT_USER;
+ALTER TABLE public.users OWNER TO CURRENT_USER;
 
 ALTER TABLE ONLY public.auth_tokens
     ADD CONSTRAINT auth_tokens_pkey PRIMARY KEY (id);
