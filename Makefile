@@ -16,7 +16,7 @@ check-builder:
 	fi
 
 check-init-builder:
-	@if ! docker buildx inspect $(INIT_BUILDER) > /dev/null 2>&1; then 
+	@if ! docker buildx inspect $(INIT_BUILDER) > /dev/null 2>&1; then \
 		echo "Builder $(INIT_BUILDER) does not exist. Creating..."; \
 	 	docker buildx create --name $(INIT_BUILDER) --bootstrap; \
 	fi
@@ -26,12 +26,18 @@ create-builder: check-builder
 create-init-builder: check-init-builder
 
 buildinitcontainer: create-init-builder
+	@echo "Building init container image: $(INIT_IMG)$(tag)"
 	docker buildx use $(INIT_BUILDER)
 	docker buildx build --file=Init.Dockerfile --platform linux/amd64,linux/arm64 -t $(INIT_IMG)$(tag) . --push
 
 buildandpush: create-builder
+	@echo "Building image: $(DOCKER_HUB)$(tag)"
 	docker buildx use $(DB_BUILDER)
 	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB)$(tag) . --push
+
+buildall: buildinitcontainer && buildandpush
+	@echo "init container image: $(INIT_IMG)$(tag)"
+	@echo "Building infra-db migration image: $(DOCKER_HUB)$(tag)"
 
 deploy: buildandpush
 	kubectl apply -f $(deployfile)
