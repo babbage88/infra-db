@@ -4,25 +4,36 @@ INIT_IMG:=ghcr.io/babbage88/jobcheck:
 ENV_FILE:=.env
 MIG:=$(shell date '+%m%d%Y.%H%M%S')
 SHELL := /bin/bash
+INIT_BUILDER:=initbuilder
+DB_BUILDER:=infradb-builder
+deployfile:=deployment/kubernetes/infra-db.yaml
 
-buildinitcontainerdev:
-	docker buildx use initctbuilder
+check-builder:
+	@if ! docker buildx inspect $(DB_BUILDER) > /dev/null 2>&1; then \
+		echo "Builder $(DB_BUILDER) does not exist. Creating..."; \
+		docker buildx create --name $(DB_BUILDER) --bootstrap; \
+	fi
+
+check-init-builder:
+	@if ! docker buildx inspect $(INIT_BUILDER) > /dev/null 2>&1; then 
+		echo "Builder $(INIT_BUILDER) does not exist. Creating..."; \
+	 	docker buildx create --name $(INIT_BUILDER) --bootstrap; \
+	fi
+
+create-builder: check-builder
+
+create-init-builder: check-init-builder
+
+buildinitcontainer: create-init-builder
+	docker buildx use $(INIT_BUILDER)
 	docker buildx build --file=Init.Dockerfile --platform linux/amd64,linux/arm64 -t $(INIT_IMG)$(tag) . --push
 
-
-buildandpushdev: 
-	docker buildx use infradb
+buildandpush: create-builder
+	docker buildx use $(DB_BUILDER)
 	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB)$(tag) . --push
 
-buildandpushlocalk3:
-	docker buildx use infradb
-	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB_TEST)$(tag) . --push
-
-deploydev: buildandpushdev
-	kubectl apply -f deployment/kubernetes/infra-db.yaml
+deploy: buildandpush
+	kubectl apply -f $(deployfile)
 	kubectl rollout restart deployment infra-db
 
-deploylocalk3: buildandpushlocalk3
-	kubelocal apply -f deployment/kubernetes/localdev/infra-db-dev.yaml
-	kubelocal rollout restart deployment infra-db
 
