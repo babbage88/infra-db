@@ -7,6 +7,7 @@ SHELL := /bin/bash
 INIT_BUILDER:=initbuilder
 DB_BUILDER:=infradb-builder
 deployfile:=deployment/kubernetes/infra-db.yaml
+tag:=$(shell git rev-parse HEAD) 
 
 check-builder:
 	@if ! docker buildx inspect $(DB_BUILDER) > /dev/null 2>&1; then \
