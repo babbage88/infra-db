@@ -1,3 +1,6 @@
+**secrets.sh
+**secrets.yaml
+**secret.yaml
 **.env
 infra-db
 # If you prefer the allow list template instead of the deny list, see community template:

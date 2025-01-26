@@ -1,8 +1,14 @@
 DOCKER_HUB:=ghcr.io/babbage88/init-infradb:
 DOCKER_HUB_TEST:=jtrahan88/infradb-test:
+INIT_IMG:=ghcr.io/babbage88/jobcheck:
 ENV_FILE:=.env
 MIG:=$(shell date '+%m%d%Y.%H%M%S')
 SHELL := /bin/bash
+
+buildinitcontainerdev:
+	docker buildx use initctbuilder
+	docker buildx build --file=Init.Dockerfile --platform linux/amd64,linux/arm64 -t $(INIT_IMG)$(tag) . --push
+
 
 buildandpushdev: 
 	docker buildx use infradb
