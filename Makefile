@@ -35,7 +35,7 @@ buildandpush: create-builder
 	docker buildx use $(DB_BUILDER)
 	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB)$(tag) . --push
 
-buildall: buildinitcontainer && buildandpush
+buildall: buildinitcontainer: buildandpush
 	@echo "init container image: $(INIT_IMG)$(tag)"
 	@echo "Building infra-db migration image: $(DOCKER_HUB)$(tag)"
 
