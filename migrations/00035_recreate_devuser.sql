@@ -19,7 +19,6 @@ WITH admin_role AS (
     RETURNING id
 ),
 permissions AS (
-
     INSERT INTO public.app_permissions (permission_name, permission_description)
     VALUES
         ('CreateUser', 'Permission to create users'),
