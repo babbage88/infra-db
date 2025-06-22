@@ -13,16 +13,19 @@ DROP TABLE IF EXISTS public.ssh_key_host_mappings;
 -- Update the view to use host_server_ssh_mappings instead
 CREATE OR REPLACE VIEW public.user_ssh_key_mappings AS
 SELECT 
+    hssm.id as mapping_id,
     u.id as user_id,
     u.username,
     hs.hostname as host_server_name,
     hs.id as host_server_id,
     sk.public_key,
     sk.id as ssh_key_id,
-    sk.priv_secret_id as external_auth_token_id,
+    COALESCE(sk.priv_secret_id, '00000000-0000-0000-0000-000000000000'::uuid) as external_auth_token_id,
     skt.name as ssh_key_type,
     hssm.hostserver_username,
-    hssm.sudo_password_token_id
+    COALESCE(hssm.sudo_password_token_id, '00000000-0000-0000-0000-000000000000'::uuid) as sudo_password_token_id,
+    hssm.created_at,
+    hssm.last_modified
 FROM public.host_server_ssh_mappings hssm
 JOIN public.users u ON u.id = hssm.user_id
 JOIN public.host_servers hs ON hs.id = hssm.host_server_id
