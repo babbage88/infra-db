@@ -23,15 +23,19 @@ func main() {
 	db, err := sql.Open("pgx", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		slog.Error("Error Initializing db", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
+	defer db.Close()
 	slog.Info("Starting migratioms")
 	goose.SetBaseFS(embedMigrations)
 
 	if err := goose.SetDialect("pgx"); err != nil {
 		slog.Error("Error configuring driver for migration", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 
 	if err := goose.Up(db, "migrations"); err != nil {
 		slog.Error("Error configuring driver for migration", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 }
