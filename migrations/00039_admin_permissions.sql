@@ -56,7 +56,8 @@ JOIN temp_admin_info t ON TRUE
 WHERE p.permission_name IN (
     'CreateUser', 
     'AlterUsers', 
-    'CreatePermission', 
+    'CreatePermission',
+    'CreateRole',
     'AlterPermission',
     'AlterRole', 
     'AlterDb',
@@ -89,7 +90,8 @@ SELECT id FROM public.app_permissions
 WHERE permission_name IN (
     'CreateUser', 
     'AlterUsers', 
-    'CreatePermission', 
+    'CreatePermission',
+    'CreateRole',
     'AlterPermission',
     'AlterRole', 
     'AlterDb',
