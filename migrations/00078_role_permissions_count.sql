@@ -5,7 +5,10 @@ SELECT
   r.role_name, 
   COUNT(rpm.permission_id) as permission_count
 FROM user_roles r
-LEFT JOIN role_permission_mapping rpm ON r.id = rpm.role_id
+LEFT JOIN role_permission_mapping rpm
+  ON r.id = rpm.role_id
+ AND rpm.enabled = TRUE
+WHERE r.is_deleted = FALSE
 GROUP BY r.id, r.role_name;
 
 -- +goose Down
