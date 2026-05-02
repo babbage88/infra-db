@@ -30,3 +30,4 @@ go.work.sum
 .env
 gocache
 gocache/**
+.gocache/**

@@ -1,3 +1,11 @@
+// infractl:name=infra-db
+// infractl:description=Database migrations and goose assets consumed by registerable infractl applications.
+// infractl:repository_url=https://github.com/babbage88/infra-db
+// infractl:manifest_path=go.mod
+// infractl:deploy_kind=migrations
+// infractl:package_manager=go
+// infractl:registerable=false
+// infractl:build_config={"migrationBinary":"goosey","migrationPath":"migrations"}
 module github.com/babbage88/infra-db
 
 go 1.24.0
