@@ -31,3 +31,4 @@ go.work.sum
 gocache
 gocache/**
 .gocache/**
+.DS_Store**
